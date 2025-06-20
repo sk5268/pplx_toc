@@ -1,0 +1,120 @@
+// content.js - SAME AS THE CHROME VERSION
+console.log("Perplexity TOC Extension Loaded (Firefox)"); // Optional: change log for clarity
+
+function extractAllQueries() {
+  // Try all robust selectors for user queries
+  // 1. Direct query containers
+  const queryElements = document.querySelectorAll(
+    'h1.group\\/query, div.group\\/query, .flex.flex-col.gap-1.pb-2'
+  );
+  let queries = Array.from(queryElements)
+    .map(el => el.textContent.trim())
+    .filter(Boolean);
+
+  // 2. Alternative: look for text nodes in likely containers
+  if (queries.length === 0) {
+    queries = Array.from(
+      document.querySelectorAll('[class*="pb-2"] .font-sans.text-textMain')
+    ).map(el => el.textContent.trim())
+     .filter(Boolean);
+  }
+
+  return queries;
+}
+
+function createTOC() {
+    const existingTOC = document.getElementById('perplexity-toc-extension');
+    if (existingTOC) {
+        existingTOC.remove();
+    }
+
+    const questions = extractAllQueries();
+
+    // Fallback: if nothing found, use <title>
+    let fallbackQuestions = questions;
+    if (fallbackQuestions.length === 0) {
+        const title = document.querySelector('title');
+        if (title && title.textContent) {
+            fallbackQuestions = [title.textContent.trim()];
+        }
+    }
+
+    console.log("Perplexity TOC - User queries found:", fallbackQuestions);
+
+    if (fallbackQuestions.length === 0) {
+        console.log("No Perplexity user queries found to build TOC.");
+        return;
+    }
+
+    const tocContainer = document.createElement('div');
+    tocContainer.id = 'perplexity-toc-extension';
+    const tocList = document.createElement('ul');
+    tocContainer.innerHTML = '<h2>Table of Contents</h2>';
+    tocContainer.appendChild(tocList);
+
+    fallbackQuestions.forEach((questionText, index) => {
+        const shortText = questionText.length > 70 ? questionText.substring(0, 67) + '...' : questionText;
+        const questionId = `toc-question-${index}`;
+
+        // Try to set an id for scrolling if possible
+        // Find the element again for id assignment
+        let el = null;
+        // Try all selectors in order
+        el = document.querySelectorAll(
+          'h1.group\\/query, div.group\\/query, .flex.flex-col.gap-1.pb-2'
+        )[index] ||
+        document.querySelectorAll('[class*="pb-2"] .font-sans.text-textMain')[index];
+
+        if (el) {
+            el.id = questionId;
+        }
+
+        const listItem = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = `#${questionId}`;
+        link.textContent = `${index + 1}. ${shortText}`;
+        link.title = questionText;
+
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetElement = document.getElementById(questionId);
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+
+        listItem.appendChild(link);
+        tocList.appendChild(listItem);
+    });
+
+    if (tocList.children.length > 0) {
+        document.body.appendChild(tocContainer);
+    } else {
+        console.log("TOC list is empty, not appending.");
+    }
+}
+
+// Optional: Chrome extension message listener for extracting queries
+if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onMessage) {
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "getQueries") {
+      const queries = extractAllQueries();
+      sendResponse({ queries });
+    }
+  });
+}
+
+const observer = new MutationObserver((mutationsList, observer) => {
+    const currentQuestions = document.querySelectorAll('h1.group/query, div.group/query').length;
+    const tocExists = !!document.getElementById('perplexity-toc-extension');
+    const tocHasItems = tocExists && document.getElementById('perplexity-toc-extension').querySelectorAll('li').length > 0;
+
+    if (currentQuestions > 0 && (!tocExists || (tocExists && !tocHasItems) ||
+        (tocHasItems && currentQuestions !== document.getElementById('perplexity-toc-extension').querySelectorAll('li').length))) {
+        clearTimeout(window.perplexityTocDebounce);
+        window.perplexityTocDebounce = setTimeout(createTOC, 300);
+    }
+});
+
+observer.observe(document.body, { childList: true, subtree: true });
+setTimeout(createTOC, 1000);

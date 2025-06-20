@@ -1,0 +1,26 @@
+{
+  "manifest_version": 2,
+  "name": "Perplexity TOC",
+  "version": "1.0",
+  "description": "Adds a Table of Contents to Perplexity.AI",
+  "icons": {
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "permissions": [
+    "*://www.perplexity.ai/search/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://www.perplexity.ai/search/*"],
+      "js": ["code.js"],
+      "css": ["code.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "pplxtoc@aosl.jb"
+    }
+  }
+}
