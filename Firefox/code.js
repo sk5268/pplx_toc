@@ -2,8 +2,7 @@
 console.log("Perplexity TOC Extension Loaded (Firefox)"); // Optional: change log for clarity
 
 function extractAllQueries() {
-  // Try all robust selectors for user queries
-  // 1. Direct query containers
+  // Use only valid selectors (escape / with \\)
   const queryElements = document.querySelectorAll(
     'h1.group\\/query, div.group\\/query, .flex.flex-col.gap-1.pb-2'
   );
@@ -11,7 +10,7 @@ function extractAllQueries() {
     .map(el => el.textContent.trim())
     .filter(Boolean);
 
-  // 2. Alternative: look for text nodes in likely containers
+  // Alternative robust selector
   if (queries.length === 0) {
     queries = Array.from(
       document.querySelectorAll('[class*="pb-2"] .font-sans.text-textMain')
@@ -104,17 +103,24 @@ if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onMessage)
   });
 }
 
-const observer = new MutationObserver((mutationsList, observer) => {
-    const currentQuestions = document.querySelectorAll('h1.group/query, div.group/query').length;
-    const tocExists = !!document.getElementById('perplexity-toc-extension');
-    const tocHasItems = tocExists && document.getElementById('perplexity-toc-extension').querySelectorAll('li').length > 0;
-
-    if (currentQuestions > 0 && (!tocExists || (tocExists && !tocHasItems) ||
-        (tocHasItems && currentQuestions !== document.getElementById('perplexity-toc-extension').querySelectorAll('li').length))) {
-        clearTimeout(window.perplexityTocDebounce);
-        window.perplexityTocDebounce = setTimeout(createTOC, 300);
+// Observe for new queries and update TOC automatically
+function observeQueriesAndUpdateTOC() {
+    const main = document.querySelector('main');
+    if (!main) {
+        createTOC();
+        return;
     }
-});
+    const observer = new MutationObserver(() => {
+        createTOC();
+    });
+    observer.observe(main, { childList: true, subtree: true });
+    // Initial TOC
+    createTOC();
+}
 
-observer.observe(document.body, { childList: true, subtree: true });
-setTimeout(createTOC, 1000);
+// Start observing when DOM is ready
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", observeQueriesAndUpdateTOC);
+} else {
+    observeQueriesAndUpdateTOC();
+}
