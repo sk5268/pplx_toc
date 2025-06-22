@@ -8,11 +8,11 @@
     "128": "icon128.png"
   },
   "permissions": [
-    "*://www.perplexity.ai/search/*"
+    "*://www.perplexity.ai/*"
   ],
   "content_scripts": [
     {
-      "matches": ["*://www.perplexity.ai/search/*"],
+      "matches": ["*://www.perplexity.ai/*"],
       "js": ["code.js"],
       "css": ["code.css"],
       "run_at": "document_idle"
