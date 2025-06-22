@@ -26,29 +26,13 @@ function createTOC() {
 
     let questions = extractAllQueries();
 
-    // Fallback: if nothing found, use <title>
-    let fallbackQuestions = questions;
-    if (fallbackQuestions.length === 0) {
-        const title = document.querySelector('title');
-        if (title && title.textContent) {
-            fallbackQuestions = [title.textContent.trim()];
-        }
-    }
-
-    console.log("Perplexity TOC - User queries found:", fallbackQuestions);
-
-    if (fallbackQuestions.length === 0) {
-        console.log("No Perplexity user queries found to build TOC.");
-        return;
-    }
-
     const tocContainer = document.createElement('div');
     tocContainer.id = 'perplexity-toc-extension';
     const tocList = document.createElement('ul');
     tocContainer.innerHTML = '<h2>Table of Contents</h2>';
     tocContainer.appendChild(tocList);
 
-    fallbackQuestions.forEach((questionText, index) => {
+    questions.forEach((questionText, index) => {
         const shortText = questionText.length > 70 ? questionText.substring(0, 67) + '...' : questionText;
         const questionId = `toc-question-${index}`;
 
