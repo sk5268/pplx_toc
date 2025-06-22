@@ -27,7 +27,7 @@ function createTOC() {
         existingTOC.remove();
     }
 
-    const questions = extractAllQueries();
+    let questions = extractAllQueries();
 
     // Fallback: if nothing found, use <title>
     let fallbackQuestions = questions;
@@ -118,9 +118,35 @@ function observeQueriesAndUpdateTOC() {
     createTOC();
 }
 
+// Listen for mouse clicks on any button
+document.addEventListener('click', function(event) {
+    if (event.target.tagName === 'BUTTON') {
+        createTOC();
+    }
+}, true);
+
+// Listen for Enter key presses on any button (or focused element)
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        // Check if the focused element is a button or inside a button
+        let el = document.activeElement;
+        if (el && (el.tagName === 'BUTTON' || el.closest('button'))) {
+            createTOC();
+        }
+    }
+}, true);
+
 // Start observing when DOM is ready
 if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", observeQueriesAndUpdateTOC);
 } else {
     observeQueriesAndUpdateTOC();
+}
+
+// Call createTOC() only on www.perplexity.ai/search page
+if (
+    window.location.hostname === "www.perplexity.ai" &&
+    window.location.pathname.startsWith("/search")
+) {
+    createTOC();
 }
