@@ -1,6 +1,3 @@
-// content.js - SAME AS THE CHROME VERSION
-console.log("Perplexity TOC Extension Loaded (Firefox)"); // Optional: change log for clarity
-
 function extractAllQueries() {
   // Use only valid selectors (escape / with \\)
   const queryElements = document.querySelectorAll(
@@ -103,21 +100,6 @@ if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onMessage)
   });
 }
 
-// Observe for new queries and update TOC automatically
-function observeQueriesAndUpdateTOC() {
-    const main = document.querySelector('main');
-    if (!main) {
-        createTOC();
-        return;
-    }
-    const observer = new MutationObserver(() => {
-        createTOC();
-    });
-    observer.observe(main, { childList: true, subtree: true });
-    // Initial TOC
-    createTOC();
-}
-
 // Listen for mouse clicks on any button
 document.addEventListener('click', function(event) {
     if (event.target.tagName === 'BUTTON') {
@@ -133,10 +115,3 @@ document.addEventListener('keydown', function(event) {
         }, 80); // Delay to allow DOM update
     }
 }, true);
-
-// Start observing when DOM is ready
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", observeQueriesAndUpdateTOC);
-} else {
-    observeQueriesAndUpdateTOC();
-}
