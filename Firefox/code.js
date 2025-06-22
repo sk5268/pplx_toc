@@ -142,11 +142,3 @@ if (document.readyState === "loading") {
 } else {
     observeQueriesAndUpdateTOC();
 }
-
-// Call createTOC() only on www.perplexity.ai/search page
-if (
-    window.location.hostname === "www.perplexity.ai" &&
-    window.location.pathname.startsWith("/search")
-) {
-    createTOC();
-}
