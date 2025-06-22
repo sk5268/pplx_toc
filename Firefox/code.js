@@ -125,14 +125,12 @@ document.addEventListener('click', function(event) {
     }
 }, true);
 
-// Listen for Enter key presses on any button (or focused element)
+// Listen for Enter key presses anywhere
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
-        // Check if the focused element is a button or inside a button
-        let el = document.activeElement;
-        if (el && (el.tagName === 'BUTTON' || el.closest('button'))) {
+        setTimeout(() => {
             createTOC();
-        }
+        }, 80); // Delay to allow DOM update
     }
 }, true);
 
