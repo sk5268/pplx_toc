@@ -68,7 +68,21 @@ function createTOC() {
     });
 
     if (tocList.children.length > 0) {
-        document.body.appendChild(tocContainer);
+        // Find the right-side main content div
+        const rightDiv = document.querySelector('.erp-sidecar\\:min-h-\\[var\\(--sidecar-content-height\\)\\].erp-tab\\:min-h-screen.min-h-\\[var\\(--page-content-height-without-header\\)\\]');
+        if (rightDiv) {
+            // Position absolutely inside the rightDiv
+            rightDiv.style.position = 'relative'; // Ensure parent is positioned
+            tocContainer.style.position = 'absolute';
+            tocContainer.style.top = '30px';
+            tocContainer.style.right = '20px';
+            tocContainer.style.margin = '0';
+            tocContainer.style.zIndex = '10000';
+            rightDiv.appendChild(tocContainer);
+        } else {
+            // fallback: append to body
+            document.body.appendChild(tocContainer);
+        }
     } else {
         console.log("TOC list is empty, not appending.");
     }
