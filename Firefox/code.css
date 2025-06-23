@@ -62,8 +62,10 @@
     content: attr(data-toc-num);
     position: absolute;
     left: -23px; /* Adjusted from -20px to -22px */
-    top: 50%;
-    transform: translateY(-50%);
+    /* Align with first line instead of vertical center */
+    top: 13px;
+    /* Removed: top: 50%; */
+    /* Removed: transform: translateY(-50%); */
     width: 14px;
     height: 14px;
     background: radial-gradient(circle, #40b8cd 60%, #3e5bff 100%);
