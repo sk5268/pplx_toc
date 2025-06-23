@@ -98,6 +98,18 @@ if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onMessage)
   });
 }
 
+// Run createTOC 3 seconds after every page load (refresh, redirect, SPA navigation)
+function delayedCreateTOC() {
+    setTimeout(() => {
+        console.log('Calling createTOC 3 seconds after page load or navigation');
+        createTOC();
+        console.log("Called createTOC");
+    }, 3000);
+}
+
+window.addEventListener('load', delayedCreateTOC);
+window.addEventListener('pageshow', delayedCreateTOC);
+
 // Listen for mouse clicks on any button
 document.addEventListener('click', function(event) {
     if (event.target.tagName === 'BUTTON') {
