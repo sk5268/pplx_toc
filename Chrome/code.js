@@ -1,0 +1,127 @@
+function extractAllQueries() {
+  // Use only valid selectors (escape / with \\)
+  const queryElements = document.querySelectorAll(
+    'h1.group\\/query, div.group\\/query, .flex.flex-col.gap-1.pb-2'
+  );
+  let queries = Array.from(queryElements)
+    .map(el => el.textContent.trim())
+    .filter(Boolean);
+
+  // Alternative robust selector
+  if (queries.length === 0) {
+    queries = Array.from(
+      document.querySelectorAll('[class*="pb-2"] .font-sans.text-textMain')
+    ).map(el => el.textContent.trim())
+     .filter(Boolean);
+  }
+
+  return queries;
+}
+
+function createTOC() {
+    const existingTOC = document.getElementById('perplexity-toc-extension');
+    if (existingTOC) {
+        existingTOC.remove();
+    }
+
+    let questions = extractAllQueries();
+
+    const tocContainer = document.createElement('div');
+    tocContainer.id = 'perplexity-toc-extension';
+    const tocList = document.createElement('ul');
+    tocContainer.innerHTML = '<h2>Table of Contents</h2>';
+    tocContainer.appendChild(tocList);
+
+    questions.forEach((questionText, index) => {
+        const shortText = questionText.length > 70 ? questionText.substring(0, 67) + '...' : questionText;
+        const questionId = `toc-question-${index}`;
+
+        // Try to set an id for scrolling if possible
+        // Find the element again for id assignment
+        let el = null;
+        // Try all selectors in order
+        el = document.querySelectorAll(
+          'h1.group\\/query, div.group\\/query, .flex.flex-col.gap-1.pb-2'
+        )[index] ||
+        document.querySelectorAll('[class*="pb-2"] .font-sans.text-textMain')[index];
+
+        if (el) {
+            el.id = questionId;
+        }
+
+        const listItem = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = `#${questionId}`;
+        link.textContent = `${index + 1}. ${shortText}`;
+        link.title = questionText;
+
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetElement = document.getElementById(questionId);
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+
+        listItem.appendChild(link);
+        tocList.appendChild(listItem);
+    });
+
+    if (tocList.children.length > 0) {
+        // Find the right-side main content div
+        const rightDiv = document.querySelector('.erp-sidecar\\:min-h-\\[var\\(--sidecar-content-height\\)\\].erp-tab\\:min-h-screen.min-h-\\[var\\(--page-content-height-without-header\\)\\]');
+        if (rightDiv) {
+            // Position absolutely inside the rightDiv
+            rightDiv.style.position = 'relative'; // Ensure parent is positioned
+            tocContainer.style.position = 'absolute';
+            tocContainer.style.top = '30px';
+            tocContainer.style.right = '20px';
+            tocContainer.style.margin = '0';
+            tocContainer.style.zIndex = '10000';
+            rightDiv.appendChild(tocContainer);
+        } else {
+            // fallback: append to body
+            document.body.appendChild(tocContainer);
+        }
+    } else {
+        console.log("TOC list is empty, not appending.");
+    }
+}
+
+// Optional: Chrome extension message listener for extracting queries
+if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onMessage) {
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "getQueries") {
+      const queries = extractAllQueries();
+      sendResponse({ queries });
+    }
+  });
+}
+
+// Run createTOC 3 seconds after every page load (refresh, redirect, SPA navigation)
+function delayedCreateTOC() {
+    setTimeout(() => {
+        console.log('Calling createTOC 3 seconds after page load or navigation');
+        createTOC();
+        console.log("Called createTOC");
+    }, 3000);
+}
+
+window.addEventListener('load', delayedCreateTOC);
+window.addEventListener('pageshow', delayedCreateTOC);
+
+// Listen for mouse clicks on any button
+document.addEventListener('click', function(event) {
+    if (event.target.tagName === 'BUTTON') {
+        createTOC();
+    }
+}, true);
+
+// Listen for Enter key presses anywhere
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        setTimeout(() => {
+            createTOC();
+        }, 80); // Delay to allow DOM update
+    }
+}, true);
