@@ -16,6 +16,8 @@
     max-width: 340px;
     margin-top: 0 !important;
     margin-left: 0 !important;
+    max-height: 70vh;
+    overflow: visible; /* Panel itself should not scroll */
 }
 
 #perplexity-toc-extension h2 {
@@ -37,6 +39,8 @@
     position: relative;
     /* Make room for the vertical line and gems */
     padding-left: 22px;
+    max-height: 52vh; /* Make the list scrollable if too long */
+    overflow-y: auto;
 }
 
 #perplexity-toc-extension ul::before {
