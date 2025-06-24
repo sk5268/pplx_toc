@@ -32,7 +32,7 @@ Coming Soon!!
 ## 🤝 Contributing
 
 Pull requests and suggestions are welcome!  
-Feel free to [open an issue](https://github.com/yourusername/pplx_toc/issues) or submit a PR.
+Feel free to [open an issue](https://github.com/sk5268/pplx_toc/issues) or submit a PR.
 
 ---
 
