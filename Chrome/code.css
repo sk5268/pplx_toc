@@ -16,6 +16,8 @@
     max-width: 340px;
     margin-top: 0 !important;
     margin-left: 0 !important;
+    max-height: 70vh;
+    overflow: visible; /* Panel itself should not scroll */
 }
 
 #perplexity-toc-extension h2 {
@@ -37,15 +39,21 @@
     position: relative;
     /* Make room for the vertical line and gems */
     padding-left: 22px;
+    max-height: 52vh; /* Make the list scrollable if too long */
+    overflow-y: auto;
 }
 
 #perplexity-toc-extension ul::before {
+    display: none; /* Remove the fixed line */
+}
+
+#perplexity-toc-extension li:nth-child(n+1):not(:last-child)::after {
     content: "";
     position: absolute;
-    left: 4px;
-    top: 0;
-    bottom: 0;
+    left: -15px; /* Move 4px right from original -20px */
+    top: 27px; /* Start below current circle */
     width: 4px;
+    height: calc(100% + 10px); /* Extend to next item */
     background: linear-gradient(180deg, #40b8cd 0%, #3e5bff 100%);
     border-radius: 2px;
     box-shadow: 0 0 8px 2px #40b8cd66;
@@ -61,7 +69,7 @@
 #perplexity-toc-extension li::before {
     content: attr(data-toc-num);
     position: absolute;
-    left: -23px; /* Adjusted from -20px to -22px */
+    left: -20px; /* Changed from -23px to -20px (+3px) */
     /* Align with first line instead of vertical center */
     top: 13px;
     /* Removed: top: 50%; */
@@ -77,7 +85,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+    z-index: 2; /* Ensure circles stay above the line */
     border: 1px solid #fff2;
     pointer-events: none;
     /* Static glow only */
