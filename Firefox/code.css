@@ -44,12 +44,16 @@
 }
 
 #perplexity-toc-extension ul::before {
+    display: none; /* Remove the fixed line */
+}
+
+#perplexity-toc-extension li:nth-child(n+1):not(:last-child)::after {
     content: "";
     position: absolute;
-    left: 7px; /* Changed from 4px to 7px (+3px) */
-    top: 0;
-    bottom: 0;
+    left: -15px; /* Move 4px right from original -20px */
+    top: 27px; /* Start below current circle */
     width: 4px;
+    height: calc(100% + 10px); /* Extend to next item */
     background: linear-gradient(180deg, #40b8cd 0%, #3e5bff 100%);
     border-radius: 2px;
     box-shadow: 0 0 8px 2px #40b8cd66;
@@ -81,7 +85,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+    z-index: 2; /* Ensure circles stay above the line */
     border: 1px solid #fff2;
     pointer-events: none;
     /* Static glow only */
