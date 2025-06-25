@@ -46,7 +46,7 @@
 #perplexity-toc-extension ul::before {
     content: "";
     position: absolute;
-    left: 4px;
+    left: 7px; /* Changed from 4px to 7px (+3px) */
     top: 0;
     bottom: 0;
     width: 4px;
@@ -65,7 +65,7 @@
 #perplexity-toc-extension li::before {
     content: attr(data-toc-num);
     position: absolute;
-    left: -23px; /* Adjusted from -20px to -22px */
+    left: -20px; /* Changed from -23px to -20px (+3px) */
     /* Align with first line instead of vertical center */
     top: 13px;
     /* Removed: top: 50%; */
