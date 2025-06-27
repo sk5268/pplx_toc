@@ -1,18 +1,19 @@
 function extractAllQueries() {
   // Use only valid selectors (escape / with \\)
   const queryElements = document.querySelectorAll(
-    'h1.group\\/query, div.group\\/query, .flex.flex-col.gap-1.pb-2'
+    "h1.group\\/query, div.group\\/query, .flex.flex-col.gap-1.pb-2"
   );
   let queries = Array.from(queryElements)
-    .map(el => el.textContent.trim())
+    .map((el) => el.textContent.trim())
     .filter(Boolean);
 
   // Alternative robust selector
   if (queries.length === 0) {
     queries = Array.from(
       document.querySelectorAll('[class*="pb-2"] .font-sans.text-textMain')
-    ).map(el => el.textContent.trim())
-     .filter(Boolean);
+    )
+      .map((el) => el.textContent.trim())
+      .filter(Boolean);
   }
 
   return queries;
@@ -58,36 +59,39 @@ function createTOC(shouldScrollToBottom = false) {
         tocContainer.classList.add('collapsed');
     }
 
-    questions.forEach((questionText, index) => {
-        const shortText = questionText.length > 70 ? questionText.substring(0, 67) + '...' : questionText;
-        const questionId = `toc-question-${index}`;
+  questions.forEach((questionText, index) => {
+    const shortText =
+      questionText.length > 70
+        ? questionText.substring(0, 67) + "..."
+        : questionText;
+    const questionId = `toc-question-${index}`;
 
         let el = document.querySelectorAll(
           'h1.group\\/query, div.group\\/query, .flex.flex-col.gap-1.pb-2'
         )[index] ||
         document.querySelectorAll('[class*="pb-2"] .font-sans.text-textMain')[index];
 
-        if (el) {
-            el.id = questionId;
-        }
+    if (el) {
+      el.id = questionId;
+    }
 
-        const listItem = document.createElement('li');
-        const link = document.createElement('a');
-        link.href = `#${questionId}`;
-        link.textContent = `${index + 1}. ${shortText}`;
-        link.title = questionText;
+    const listItem = document.createElement("li");
+    const link = document.createElement("a");
+    link.href = `#${questionId}`;
+    link.textContent = `${index + 1}. ${shortText}`;
+    link.title = questionText;
 
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetElement = document.getElementById(questionId);
-            if (targetElement) {
-                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
-
-        listItem.appendChild(link);
-        tocList.appendChild(listItem);
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const targetElement = document.getElementById(questionId);
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     });
+
+    listItem.appendChild(link);
+    tocList.appendChild(listItem);
+  });
 
     // --- Auto-scroll the TOC list if needed ---
     if (shouldScrollToBottom) {
@@ -113,7 +117,11 @@ function createTOC(shouldScrollToBottom = false) {
 }
 
 // Optional: Chrome extension message listener for extracting queries
-if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onMessage) {
+if (
+  typeof chrome !== "undefined" &&
+  chrome.runtime &&
+  chrome.runtime.onMessage
+) {
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "getQueries") {
       const queries = extractAllQueries();
@@ -146,7 +154,9 @@ document.addEventListener('click', function(e) {
         console.log('Submit button clicked.');
         refreshTOC(e);
     }
-}, true);
+  },
+  true
+);
 
 // Listen for Enter key presses in the text area.
 document.addEventListener('keydown', function(e) {
