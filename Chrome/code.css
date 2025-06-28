@@ -110,3 +110,112 @@
     font-weight: 700;
     text-shadow: 0 1px 2px #0002;
 }
+
+/* --- Responsive Design Adjustments --- */
+/* For smaller desktop and tablet screens */
+@media (max-width: 1200px) {
+    #perplexity-toc-extension {
+        /* Make it a bit smaller and move it closer to the edge */
+        min-width: 220px;
+        max-width: 280px;
+        right: 20px;
+        top: 70px; /* Give a bit more space from the top */
+        font-size: 14px;
+    }
+    #perplexity-toc-extension h2 {
+        font-size: 16px;
+    }
+    #perplexity-toc-extension ul {
+        max-height: 60vh; /* Allow it to be a bit taller on smaller screens */
+    }
+}
+
+/* For very narrow desktop or large tablet screens */
+@media (max-width: 900px) {
+    #perplexity-toc-extension {
+        /* Significantly reduce size and simplify */
+        min-width: 180px;
+        max-width: 220px;
+        padding: 12px;
+        font-size: 13px;
+    }
+    #perplexity-toc-extension h2 {
+        margin-bottom: 8px;
+        font-size: 15px;
+    }
+    #perplexity-toc-extension li a {
+        padding: 8px 10px;
+    }
+}
+
+/* --- Collapsible TOC Styles --- */
+#perplexity-toc-extension .toc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* The h2 already has a bottom border, which works well here */
+}
+
+#toc-toggle-btn {
+    background: #ffffff1a;
+    border: 1px solid #ffffff2a;
+    color: #fff;
+    border-radius: 6px;
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
+    line-height: 22px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.3s ease-in-out;
+    flex-shrink: 0;
+    padding: 0;
+    position: relative;
+}
+
+#toc-toggle-btn:hover {
+    background: #ffffff3a;
+    transform: scale(1.1);
+}
+
+/* The icon for the button (a minus sign) */
+#toc-toggle-btn::before {
+    content: '−';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+#perplexity-toc-extension.collapsed {
+    /* Make it a perfect container for the button */
+    width: 44px;  /* A bit of space around the 24px button */
+    height: 44px;
+    padding: 10px; /* Center the button by having equal padding */
+    min-width: 0; /* Override the default min-width */
+    background-color: #181a2099; /* More transparent when collapsed */
+    overflow: hidden; /* Hide anything that might stick out */
+    display: flex; /* Use flexbox to easily center the button */
+    align-items: center;
+    justify-content: center;
+}
+
+#perplexity-toc-extension.collapsed h2 {
+    display: none; /* Hide the "Table of Contents" text */
+}
+
+#perplexity-toc-extension.collapsed ul {
+    display: none; /* Hide the list completely */
+}
+
+/* Change the button icon to a plus sign when collapsed */
+#perplexity-toc-extension.collapsed #toc-toggle-btn::before {
+    content: '+';
+    font-size: 22px;
+}
+
+/* Optional: A subtle rotation animation for the button */
+#perplexity-toc-extension.collapsed #toc-toggle-btn {
+    transform: rotate(180deg);
+}
