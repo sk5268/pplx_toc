@@ -201,8 +201,8 @@
 #toc-toggle-btn::before {
     content: '-';
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 18px;
-    font-weight: 300;
+    font-size: 26px;      /* Increased size */
+    font-weight: 500;     /* Thicker */
     line-height: 1;
     transition: all 0.2s ease;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -252,8 +252,8 @@
 /* Change the button icon to a plus sign when collapsed */
 #perplexity-toc-extension.collapsed #toc-toggle-btn::before {
     content: '+';
-    font-size: 20px;
-    font-weight: 300;
+    font-size: 28px;      /* Increased size */
+    font-weight: 500;     /* Thicker */
     color: #40b8cd; /* Match TOC text color */
 }
 
