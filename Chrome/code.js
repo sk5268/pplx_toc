@@ -222,20 +222,49 @@ function createTOC(shouldScrollToBottom = false) {
 
   const tocHeader = document.createElement("div");
   tocHeader.className = CONSTANTS.CLASSES.TOC_HEADER;
-  tocHeader.innerHTML = `
-        <div class="${CONSTANTS.CLASSES.TOC_HEADER_CONTENT}">
-          <div class="${CONSTANTS.CLASSES.TOC_DRAG_HANDLE}" title="Drag to move"></div>
-          <h2>Table of Contents</h2>
-        </div>
-        <button id="${CONSTANTS.IDS.TOC_TOGGLE_BTN}" title="Toggle Table of Contents"></button>
-    `;
+
+  // Create header content div
+  const headerContent = document.createElement("div");
+  headerContent.className = CONSTANTS.CLASSES.TOC_HEADER_CONTENT;
+
+  // Create drag handle
+  const dragHandle = document.createElement("div");
+  dragHandle.className = CONSTANTS.CLASSES.TOC_DRAG_HANDLE;
+  dragHandle.title = "Drag to move";
+
+  // Create h2 title
+  const title = document.createElement("h2");
+  title.textContent = "Table of Contents";
+
+  // Create toggle button
+  const toggleButton = document.createElement("button");
+  toggleButton.id = CONSTANTS.IDS.TOC_TOGGLE_BTN;
+  toggleButton.title = "Toggle Table of Contents";
+
+  // Assemble header structure
+  headerContent.appendChild(dragHandle);
+  headerContent.appendChild(title);
+  tocHeader.appendChild(headerContent);
+  tocHeader.appendChild(toggleButton);
 
   const searchContainer = document.createElement("div");
   searchContainer.className = CONSTANTS.CLASSES.TOC_SEARCH_CONTAINER;
-  searchContainer.innerHTML = `
-        <input type="text" id="${CONSTANTS.IDS.SEARCH_INPUT}" placeholder="Search queries..." />
-        <div id="${CONSTANTS.IDS.SEARCH_CLEAR}" title="Clear search">×</div>
-    `;
+
+  // Create search input
+  const searchInputElement = document.createElement("input");
+  searchInputElement.type = "text";
+  searchInputElement.id = CONSTANTS.IDS.SEARCH_INPUT;
+  searchInputElement.placeholder = "Search queries...";
+
+  // Create clear button
+  const searchClearElement = document.createElement("div");
+  searchClearElement.id = CONSTANTS.IDS.SEARCH_CLEAR;
+  searchClearElement.title = "Clear search";
+  searchClearElement.textContent = "×";
+
+  // Assemble search container
+  searchContainer.appendChild(searchInputElement);
+  searchContainer.appendChild(searchClearElement);
 
   const tocList = document.createElement("ul");
 
