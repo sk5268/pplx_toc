@@ -26,14 +26,56 @@
 
 #perplexity-toc-extension h2 {
     margin-top: 0;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     font-size: 17px;
     font-weight: 700;
     color: #40b8cd;
-    border-bottom: 1px solid #40b8cd33;
-    padding-bottom: 8px;
     background: transparent;
     letter-spacing: 0.01em;
+}
+
+#perplexity-toc-extension .toc-header {
+    border-bottom: 1px solid #40b8cd33;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    user-select: none;
+    position: relative;
+}
+
+.toc-header-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    height: 32px;
+}
+
+.toc-header-content h2 {
+    margin: 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    height: 32px;
+}
+
+.toc-drag-handle {
+    width: 28px;
+    height: 32px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='%2340b8cd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3Ccircle cx='9' cy='3' r='1'/%3E%3Ccircle cx='3' cy='6' r='1'/%3E%3Ccircle cx='9' cy='6' r='1'/%3E%3Ccircle cx='3' cy='9' r='1'/%3E%3Ccircle cx='9' cy='9' r='1'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 16px 16px;
+    opacity: 0.6;
+    cursor: move;
+    user-select: none;
+    transition: opacity 0.2s ease;
+    transform: translateY(-6px);
+    flex-shrink: 0;
+    margin-right: 4px;
 }
 
 /* Search Container Styles */
@@ -248,12 +290,6 @@
 }
 
 /* --- Collapsible TOC Styles --- */
-#perplexity-toc-extension .toc-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    /* The h2 already has a bottom border, which works well here */
-}
 
 #toc-toggle-btn {
     background: linear-gradient(145deg, #2a2d36, #1e2028);
@@ -335,8 +371,9 @@
     /* Make it a perfect container for the button */
     width: 48px; /* Slightly larger for the new button */
     height: 48px;
-    padding: 10px;
+    padding: 0;
     min-width: 0;
+    max-width: none;
     background-color: #181a2099;
     overflow: hidden;
     display: flex;
@@ -344,16 +381,28 @@
     justify-content: center;
 }
 
-#perplexity-toc-extension.collapsed h2 {
-    display: none; /* Hide the "Table of Contents" text */
+#perplexity-toc-extension.collapsed .toc-header {
+    cursor: move;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-#perplexity-toc-extension.collapsed .toc-search-container {
-    display: none; /* Hide the search bar when collapsed */
-}
-
+#perplexity-toc-extension.collapsed .toc-header-content,
+#perplexity-toc-extension.collapsed h2,
+#perplexity-toc-extension.collapsed .toc-search-container,
 #perplexity-toc-extension.collapsed ul {
-    display: none; /* Hide the list completely */
+    display: none;
+}
+
+#perplexity-toc-extension.collapsed #toc-toggle-btn {
+    width: 48px;
+    height: 48px;
 }
 
 /* Change the button icon to a plus sign when collapsed */
@@ -362,11 +411,6 @@
     font-size: 28px; /* Increased size */
     font-weight: 500; /* Thicker */
     color: #40b8cd; /* Match TOC text color */
-}
-
-/* Remove rotation animation for the button */
-#perplexity-toc-extension.collapsed #toc-toggle-btn {
-    background: linear-gradient(145deg, #2e3138, #22252d);
 }
 
 #perplexity-toc-extension.collapsed #toc-toggle-btn:hover {
@@ -378,4 +422,9 @@
         0 4px 12px rgba(0, 0, 0, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.15),
         0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Remove rotation animation for the button */
+#perplexity-toc-extension.collapsed #toc-toggle-btn {
+    background: linear-gradient(145deg, #2e3138, #22252d);
 }
