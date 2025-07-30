@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Perplexity TOC",
+  "name": "Perplexity Table of Content",
   "version": "1.9",
   "description": "Adds a Table of Contents to Perplexity.AI",
   "icons": {
