@@ -9,15 +9,28 @@
 ## 🚀 Features
 
 - 📑 **Automatic Table of Contents** for all your Perplexity queries
-- 🎨 **Modern, eye-catching design** that blends with Perplexity's UI
 - 🖱️ **Clickable links** for smooth navigation between questions
-- ⚡ **Works instantly** for new queries
+- 🧲 **Drag-and-drop TOC panel** – move it anywhere on the page
+- 💾 **Remembers position** – TOC stays where you left it, even after reloads
+- 🔍 **Instant search/filter** – quickly find any question in your chat
+- ❌ **One-click clear** – easily reset your search
+- ➕/➖ **Collapsible panel** – hide or show the TOC with a single click
+- 📱 **Responsive & adaptive design** – looks great on all screen sizes
+- 🎨 **Modern, eye-catching design** that blends with Perplexity's UI
+- 🌙 **Dark mode native** – matches Perplexity's dark theme
+- 🏷️ **Truncates long queries** for a clean look, with full text on hover
+- 🔗 **Smooth scroll to question** when clicking TOC links
+- 🔄 **Updates automatically** for new queries, page loads, and SPA navigation
+- 🧩 **Works as a browser extension** (tested on Firefox/Chrome)
+- 🛡️ **Non-intrusive** – overlays on top of Perplexity, doesn't interfere with usage
+
 
 ---
 
 ## 🛠️ Installation
 
-Coming Soon!!
+[Install for Firefox](https://addons.mozilla.org/en-US/firefox/addon/pplx-toc/)
+[Install for Chrome](https://chromewebstore.google.com/detail/oakmeenjjnhoobaddpbjbkifdmenhdkk?utm_source=item-share-cb)
 
 ---
 
