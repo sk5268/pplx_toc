@@ -1,7 +1,7 @@
 function extractAllQueries() {
   // Use only valid selectors (escape / with \\)
   const queryElements = document.querySelectorAll(
-    "h1.group\\/query, div.group\\/query, .flex.flex-col.gap-1.pb-2"
+    "h1.group\\/query, div.group\\/query, .flex.flex-col.gap-1.pb-2",
   );
   let queries = Array.from(queryElements)
     .map((el) => el.textContent.trim())
@@ -10,7 +10,7 @@ function extractAllQueries() {
   // Alternative robust selector
   if (queries.length === 0) {
     queries = Array.from(
-      document.querySelectorAll('[class*="pb-2"] .font-sans.text-textMain')
+      document.querySelectorAll('[class*="pb-2"] .font-sans.text-textMain'),
     )
       .map((el) => el.textContent.trim())
       .filter(Boolean);
@@ -20,44 +20,81 @@ function extractAllQueries() {
 }
 
 function createTOC(shouldScrollToBottom = false) {
-    const existingTOC = document.getElementById('perplexity-toc-extension');
-    if (existingTOC) {
-        existingTOC.remove();
-    }
+  const existingTOC = document.getElementById("perplexity-toc-extension");
+  if (existingTOC) {
+    existingTOC.remove();
+  }
 
-    let questions = extractAllQueries();
+  let questions = extractAllQueries();
 
-    // Don't create the TOC if there's only one or zero questions
-    if (questions.length <= 1) {
-        console.log("Not enough queries to build a TOC.");
-        return;
-    }
+  // Don't create the TOC if there's only one or zero questions
+  if (questions.length <= 1) {
+    console.log("Not enough queries to build a TOC.");
+    return;
+  }
 
-    const tocContainer = document.createElement('div');
-    tocContainer.id = 'perplexity-toc-extension';
-    
-    const tocHeader = document.createElement('div');
-    tocHeader.className = 'toc-header';
-    tocHeader.innerHTML = `
+  const tocContainer = document.createElement("div");
+  tocContainer.id = "perplexity-toc-extension";
+
+  const tocHeader = document.createElement("div");
+  tocHeader.className = "toc-header";
+  tocHeader.innerHTML = `
         <h2>Table of Contents</h2>
         <button id="toc-toggle-btn" title="Toggle Table of Contents"></button>
     `;
 
-    const tocList = document.createElement('ul');
-    
-    tocContainer.appendChild(tocHeader);
-    tocContainer.appendChild(tocList);
+  const searchContainer = document.createElement("div");
+  searchContainer.className = "toc-search-container";
+  searchContainer.innerHTML = `
+        <input type="text" id="toc-search-input" placeholder="Search queries..." />
+        <div id="toc-search-clear" title="Clear search">×</div>
+    `;
 
-    // --- Add Toggle Button Functionality ---
-    const toggleBtn = tocContainer.querySelector('#toc-toggle-btn');
-    toggleBtn.addEventListener('click', () => {
-        tocContainer.classList.toggle('collapsed');
+  const tocList = document.createElement("ul");
+
+  tocContainer.appendChild(tocHeader);
+  tocContainer.appendChild(searchContainer);
+  tocContainer.appendChild(tocList);
+
+  // --- Add Toggle Button Functionality ---
+  const toggleBtn = tocContainer.querySelector("#toc-toggle-btn");
+  toggleBtn.addEventListener("click", () => {
+    tocContainer.classList.toggle("collapsed");
+  });
+
+  // --- Add Search Functionality ---
+  const searchInput = tocContainer.querySelector("#toc-search-input");
+  const searchClear = tocContainer.querySelector("#toc-search-clear");
+  const allListItems = [];
+
+  // Store reference to all list items for filtering
+  const updateSearchResults = () => {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+
+    allListItems.forEach((item) => {
+      const text = item.querySelector("a").textContent.toLowerCase();
+      const shouldShow = searchTerm === "" || text.includes(searchTerm);
+      item.style.display = shouldShow ? "block" : "none";
     });
+  };
 
-    // --- Default to collapsed on smaller screens ---
-    if (window.innerWidth <= 1024) {
-        tocContainer.classList.add('collapsed');
-    }
+  searchInput.addEventListener("input", updateSearchResults);
+
+  searchClear.addEventListener("click", () => {
+    searchInput.value = "";
+    updateSearchResults();
+    searchInput.focus();
+  });
+
+  // Show/hide clear button based on input content
+  searchInput.addEventListener("input", () => {
+    searchClear.style.display = searchInput.value ? "flex" : "none";
+  });
+
+  // --- Default to collapsed on smaller screens ---
+  if (window.innerWidth <= 1024) {
+    tocContainer.classList.add("collapsed");
+  }
 
   questions.forEach((questionText, index) => {
     const shortText =
@@ -66,10 +103,13 @@ function createTOC(shouldScrollToBottom = false) {
         : questionText;
     const questionId = `toc-question-${index}`;
 
-        let el = document.querySelectorAll(
-          'h1.group\\/query, div.group\\/query, .flex.flex-col.gap-1.pb-2'
-        )[index] ||
-        document.querySelectorAll('[class*="pb-2"] .font-sans.text-textMain')[index];
+    let el =
+      document.querySelectorAll(
+        "h1.group\\/query, div.group\\/query, .flex.flex-col.gap-1.pb-2",
+      )[index] ||
+      document.querySelectorAll('[class*="pb-2"] .font-sans.text-textMain')[
+        index
+      ];
 
     if (el) {
       el.id = questionId;
@@ -91,29 +131,34 @@ function createTOC(shouldScrollToBottom = false) {
 
     listItem.appendChild(link);
     tocList.appendChild(listItem);
+
+    // Store reference for search functionality
+    allListItems.push(listItem);
   });
 
-    // --- Auto-scroll the TOC list if needed ---
-    if (shouldScrollToBottom) {
-        // Use requestAnimationFrame to ensure scrolling happens after the DOM has painted
-        requestAnimationFrame(() => {
-            tocList.scrollTop = tocList.scrollHeight;
-        });
-    }
+  // --- Auto-scroll the TOC list if needed ---
+  if (shouldScrollToBottom) {
+    // Use requestAnimationFrame to ensure scrolling happens after the DOM has painted
+    requestAnimationFrame(() => {
+      tocList.scrollTop = tocList.scrollHeight;
+    });
+  }
 
-    // Find the right-side main content div
-    const rightDiv = document.querySelector('.erp-sidecar\\:min-h-\\[var\\(--sidecar-content-height\\)\\].erp-tab\\:min-h-screen.min-h-\\[var\\(--page-content-height-without-header\\)\\]');
-    if (rightDiv) {
-        rightDiv.style.position = 'relative'; 
-        tocContainer.style.position = 'absolute';
-        tocContainer.style.top = '30px';
-        tocContainer.style.right = '20px';
-        tocContainer.style.margin = '0';
-        tocContainer.style.zIndex = '10000';
-        rightDiv.appendChild(tocContainer);
-    } else {
-        document.body.appendChild(tocContainer);
-    }
+  // Find the right-side main content div
+  const rightDiv = document.querySelector(
+    ".erp-sidecar\\:min-h-\\[var\\(--sidecar-content-height\\)\\].erp-tab\\:min-h-screen.min-h-\\[var\\(--page-content-height-without-header\\)\\]",
+  );
+  if (rightDiv) {
+    rightDiv.style.position = "relative";
+    tocContainer.style.position = "absolute";
+    tocContainer.style.top = "30px";
+    tocContainer.style.right = "20px";
+    tocContainer.style.margin = "0";
+    tocContainer.style.zIndex = "10000";
+    rightDiv.appendChild(tocContainer);
+  } else {
+    document.body.appendChild(tocContainer);
+  }
 }
 
 // Optional: Chrome extension message listener for extracting queries
@@ -131,38 +176,45 @@ if (
 }
 
 function refreshTOC(event) {
-    const isInteraction = event && (event.type === 'click' || event.type === 'keydown');
-    const delay = isInteraction ? 200 : 3000;
+  const isInteraction =
+    event && (event.type === "click" || event.type === "keydown");
+  const delay = isInteraction ? 200 : 3000;
 
-    setTimeout(() => {
-        console.log(`Regenerating TOC after ${delay}ms delay...`);
-        // Pass 'true' to scroll to bottom only if it was a user interaction
-        createTOC(isInteraction);
-    }, delay);
+  setTimeout(() => {
+    console.log(`Regenerating TOC after ${delay}ms delay...`);
+    // Pass 'true' to scroll to bottom only if it was a user interaction
+    createTOC(isInteraction);
+  }, delay);
 }
 
 // Initial page load. No event object is passed, so it uses the 3000ms delay, and it won't scroll.
-window.addEventListener('load', refreshTOC);
+window.addEventListener("load", refreshTOC);
 
 // For SPA navigations or back/forward button usage.
-window.addEventListener('pageshow', refreshTOC);
+window.addEventListener("pageshow", refreshTOC);
 
 // Listen for mouse clicks anywhere on the page.
-document.addEventListener('click', function(e) {
+document.addEventListener(
+  "click",
+  function (e) {
     // Use .closest() to check if the click was on or inside the submit button.
     if (e.target.closest('[data-testid="submit-button"]')) {
-        console.log('Submit button clicked.');
-        refreshTOC(e);
+      console.log("Submit button clicked.");
+      refreshTOC(e);
     }
   },
-  true
+  true,
 );
 
 // Listen for Enter key presses in the text area.
-document.addEventListener('keydown', function(e) {
+document.addEventListener(
+  "keydown",
+  function (e) {
     // Check if the active element is the textarea and the key is Enter
-    if (e.key === 'Enter' && document.activeElement.id === 'ask-input') {
-        console.log('Enter key pressed in input.');
-        refreshTOC(e);
+    if (e.key === "Enter" && document.activeElement.id === "ask-input") {
+      console.log("Enter key pressed in input.");
+      refreshTOC(e);
     }
-}, true);
+  },
+  true,
+);
