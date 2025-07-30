@@ -29,7 +29,7 @@
 
 ## 🛠️ Installation
 
-[Install for Firefox](https://addons.mozilla.org/en-US/firefox/addon/pplx-toc/)
+[Install for Firefox](https://addons.mozilla.org/en-US/firefox/addon/pplx-toc/) <br>
 [Install for Chrome](https://chromewebstore.google.com/detail/oakmeenjjnhoobaddpbjbkifdmenhdkk?utm_source=item-share-cb)
 
 ---
