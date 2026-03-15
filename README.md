@@ -1,3 +1,4 @@
+This repo is depracted in favour of [AI_TOC](https://github.com/sk5268/AI_TOC)
 <h1 align="center">✨ Perplexity TOC ✨</h1>
 
 <p align="center">
